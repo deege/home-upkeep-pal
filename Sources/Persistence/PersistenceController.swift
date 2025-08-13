@@ -11,7 +11,9 @@ public final class PersistenceController {
     public let container: NSPersistentCloudKitContainer
 
     private init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "HomeCare")
+        let modelURL = Bundle.module.url(forResource: "HomeCare", withExtension: "momd")!
+        let model = NSManagedObjectModel(contentsOf: modelURL)!
+        container = NSPersistentCloudKitContainer(name: "HomeCare", managedObjectModel: model)
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
