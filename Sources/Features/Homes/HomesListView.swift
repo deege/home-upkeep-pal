@@ -17,7 +17,11 @@ public struct HomesListView: View {
             .navigationTitle("Homes")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { isPresentingNewHome = true }) { Image(systemName: "plus") }
+                    Button {
+                        isPresentingNewHome = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
