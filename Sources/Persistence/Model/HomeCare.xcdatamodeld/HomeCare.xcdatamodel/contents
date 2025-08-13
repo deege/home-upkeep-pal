@@ -21,10 +21,10 @@
         <attribute name="purchaseDate" attributeType="Date" optional="YES"/>
         <attribute name="warrantyExpiry" attributeType="Date" optional="YES"/>
         <attribute name="notes" attributeType="String" optional="YES"/>
-        <attribute name="photoFileNames" attributeType="Transformable" optional="YES"/>
+        <attribute name="photoFileNames" attributeType="Transformable" optional="YES" valueTransformerName="NSSecureUnarchiveFromDataTransformerName"/>
         <attribute name="createdAt" attributeType="Date" optional="NO"/>
         <attribute name="updatedAt" attributeType="Date" optional="NO"/>
-        <relationship name="home" optional="NO" toMany="NO" deletionRule="Nullify" destinationEntity="Home" inverseName="assets" inverseEntity="Home"/>
+        <relationship name="home" optional="NO" toMany="NO" maxCount="1" deletionRule="Nullify" destinationEntity="Home" inverseName="assets" inverseEntity="Home"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Task" inverseName="asset" inverseEntity="Task"/>
     </entity>
     <entity name="Task" representedClassName="Task" syncable="YES">
@@ -39,7 +39,7 @@
         <attribute name="isArchived" attributeType="Boolean" optional="NO" defaultValueString="NO"/>
         <attribute name="createdAt" attributeType="Date" optional="NO"/>
         <attribute name="updatedAt" attributeType="Date" optional="NO"/>
-        <relationship name="home" optional="NO" toMany="NO" deletionRule="Nullify" destinationEntity="Home" inverseName="tasks" inverseEntity="Home"/>
-        <relationship name="asset" optional="YES" toMany="NO" deletionRule="Nullify" destinationEntity="Asset" inverseName="tasks" inverseEntity="Asset"/>
+        <relationship name="home" optional="NO" toMany="NO" maxCount="1" deletionRule="Nullify" destinationEntity="Home" inverseName="tasks" inverseEntity="Home"/>
+        <relationship name="asset" optional="YES" toMany="NO" maxCount="1" deletionRule="Nullify" destinationEntity="Asset" inverseName="tasks" inverseEntity="Asset"/>
     </entity>
 </model>
