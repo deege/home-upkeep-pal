@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19540" systemVersion="21C52" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="" >
     <entity name="Home" representedClassName="Home" syncable="YES">
-        <attribute name="id" attributeType="UUID" optional="NO"/>
+        <attribute name="id" attributeType="UUIDAttributeType" optional="NO"/>
         <attribute name="name" attributeType="String" optional="NO"/>
         <attribute name="address" attributeType="String" optional="YES"/>
         <attribute name="notes" attributeType="String" optional="YES"/>
@@ -11,8 +11,8 @@
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Task" inverseName="home" inverseEntity="Task"/>
     </entity>
     <entity name="Asset" representedClassName="Asset" syncable="YES">
-        <attribute name="id" attributeType="UUID" optional="NO"/>
-        <attribute name="homeID" attributeType="UUID" optional="NO"/>
+        <attribute name="id" attributeType="UUIDAttributeType" optional="NO"/>
+        <attribute name="homeID" attributeType="UUIDAttributeType" optional="NO"/>
         <attribute name="name" attributeType="String" optional="NO"/>
         <attribute name="category" attributeType="String" optional="NO"/>
         <attribute name="location" attributeType="String" optional="YES"/>
@@ -21,16 +21,16 @@
         <attribute name="purchaseDate" attributeType="Date" optional="YES"/>
         <attribute name="warrantyExpiry" attributeType="Date" optional="YES"/>
         <attribute name="notes" attributeType="String" optional="YES"/>
-        <attribute name="photoFileNames" attributeType="Transformable" optional="YES" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="photoFileNames" attributeType="Transformable" optional="YES"/>
         <attribute name="createdAt" attributeType="Date" optional="NO"/>
         <attribute name="updatedAt" attributeType="Date" optional="NO"/>
-        <relationship name="home" optional="NO" toMany="NO" maxCount="1" deletionRule="Nullify" destinationEntity="Home" inverseName="assets" inverseEntity="Home"/>
+        <relationship name="home" optional="NO" toMany="NO" deletionRule="Nullify" destinationEntity="Home" inverseName="assets" inverseEntity="Home"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Task" inverseName="asset" inverseEntity="Task"/>
     </entity>
     <entity name="Task" representedClassName="Task" syncable="YES">
-        <attribute name="id" attributeType="UUID" optional="NO"/>
-        <attribute name="homeID" attributeType="UUID" optional="NO"/>
-        <attribute name="assetID" attributeType="UUID" optional="YES"/>
+        <attribute name="id" attributeType="UUIDAttributeType" optional="NO"/>
+        <attribute name="homeID" attributeType="UUIDAttributeType" optional="NO"/>
+        <attribute name="assetID" attributeType="UUIDAttributeType" optional="YES"/>
         <attribute name="title" attributeType="String" optional="NO"/>
         <attribute name="notes" attributeType="String" optional="YES"/>
         <attribute name="frequencyDays" attributeType="Integer 32" optional="NO"/>
@@ -39,7 +39,7 @@
         <attribute name="isArchived" attributeType="Boolean" optional="NO" defaultValueString="NO"/>
         <attribute name="createdAt" attributeType="Date" optional="NO"/>
         <attribute name="updatedAt" attributeType="Date" optional="NO"/>
-        <relationship name="home" optional="NO" toMany="NO" maxCount="1" deletionRule="Nullify" destinationEntity="Home" inverseName="tasks" inverseEntity="Home"/>
-        <relationship name="asset" optional="YES" toMany="NO" maxCount="1" deletionRule="Nullify" destinationEntity="Asset" inverseName="tasks" inverseEntity="Asset"/>
+        <relationship name="home" optional="NO" toMany="NO" deletionRule="Nullify" destinationEntity="Home" inverseName="tasks" inverseEntity="Home"/>
+        <relationship name="asset" optional="YES" toMany="NO" deletionRule="Nullify" destinationEntity="Asset" inverseName="tasks" inverseEntity="Asset"/>
     </entity>
 </model>
