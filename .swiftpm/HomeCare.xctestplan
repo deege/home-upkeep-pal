@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "42052C16-3ACF-4475-A5C1-0BB39FB07ADB",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HomeCareTests",
+        "name" : "HomeCareTests"
+      }
+    }
+  ],
+  "version" : 1
+}
