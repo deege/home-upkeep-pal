@@ -54,12 +54,9 @@ targets.append(
     )
 )
 #endif
-
 let package = Package(
     name: "HomeCare",
     platforms: [
         .iOS(.v17)
     ],
-    products: products,
-    targets: targets
 )
