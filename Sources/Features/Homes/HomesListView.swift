@@ -20,15 +20,15 @@ public struct HomesListView: View {
                     Button(action: { isPresentingNewHome = true }) { Image(systemName: "plus") }
                 }
             }
-            .sheet(isPresented: $isPresentingNewHome) {
-                NavigationStack {
-                    EditHomeView { home in
-                        homes.append(home)
-                        isPresentingNewHome = false
-                    }
+            .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
+        }
+        .sheet(isPresented: $isPresentingNewHome) {
+            NavigationStack {
+                EditHomeView { home in
+                    homes.append(home)
+                    isPresentingNewHome = false
                 }
             }
-            .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
         }
     }
 }
