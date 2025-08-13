@@ -7,10 +7,13 @@ public struct EditHomeView: View {
     @State private var address: String
     @State private var notes: String
 
-    public init(home: HomeEntity? = nil) {
+    private var onSave: (HomeEntity) -> Void
+
+    public init(home: HomeEntity? = nil, onSave: @escaping (HomeEntity) -> Void = { _ in }) {
         _name = State(initialValue: home?.name ?? "")
         _address = State(initialValue: home?.address ?? "")
         _notes = State(initialValue: home?.notes ?? "")
+        self.onSave = onSave
     }
 
     public var body: some View {
@@ -24,7 +27,12 @@ public struct EditHomeView: View {
         .navigationTitle("Home")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {}
+                Button("Save") {
+                    let newHome = HomeEntity(name: name,
+                                            address: address.isEmpty ? nil : address,
+                                            notes: notes.isEmpty ? nil : notes)
+                    onSave(newHome)
+                }
             }
         }
     }
