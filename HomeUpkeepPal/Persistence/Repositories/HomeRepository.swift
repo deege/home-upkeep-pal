@@ -21,7 +21,7 @@ public final class CoreDataHomeRepository: HomeRepository {
     public func fetchHomes() async throws -> [HomeEntity] {
         try await context.perform {
             let request = NSFetchRequest<NSManagedObject>(entityName: "Home")
-            let objects = try context.fetch(request)
+            let objects = try self.context.fetch(request)
             return objects.compactMap { obj in
                 guard let id = obj.value(forKey: "id") as? UUID,
                       let name = obj.value(forKey: "name") as? String,
@@ -43,14 +43,14 @@ public final class CoreDataHomeRepository: HomeRepository {
 
     public func add(home: HomeEntity) async throws {
         try await context.perform {
-            let obj = NSEntityDescription.insertNewObject(forEntityName: "Home", into: context)
+            let obj = NSEntityDescription.insertNewObject(forEntityName: "Home", into: self.context)
             obj.setValue(home.id, forKey: "id")
             obj.setValue(home.name, forKey: "name")
             obj.setValue(home.address, forKey: "address")
             obj.setValue(home.notes, forKey: "notes")
             obj.setValue(home.createdAt, forKey: "createdAt")
             obj.setValue(home.updatedAt, forKey: "updatedAt")
-            try context.save()
+            try self.context.save()
         }
     }
 
@@ -58,12 +58,12 @@ public final class CoreDataHomeRepository: HomeRepository {
         try await context.perform {
             let request = NSFetchRequest<NSManagedObject>(entityName: "Home")
             request.predicate = NSPredicate(format: "id == %@", home.id as CVarArg)
-            if let obj = try context.fetch(request).first {
+            if let obj = try self.context.fetch(request).first {
                 obj.setValue(home.name, forKey: "name")
                 obj.setValue(home.address, forKey: "address")
                 obj.setValue(home.notes, forKey: "notes")
                 obj.setValue(home.updatedAt, forKey: "updatedAt")
-                try context.save()
+                try self.context.save()
             }
         }
     }
@@ -72,9 +72,9 @@ public final class CoreDataHomeRepository: HomeRepository {
         try await context.perform {
             let request = NSFetchRequest<NSManagedObject>(entityName: "Home")
             request.predicate = NSPredicate(format: "id == %@", home.id as CVarArg)
-            if let obj = try context.fetch(request).first {
-                context.delete(obj)
-                try context.save()
+            if let obj = try self.context.fetch(request).first {
+                self.context.delete(obj)
+                try self.context.save()
             }
         }
     }

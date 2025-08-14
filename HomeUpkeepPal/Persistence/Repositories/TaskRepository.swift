@@ -20,7 +20,7 @@ public final class CoreDataTaskRepository: TaskRepository {
         try await context.perform {
             let request = NSFetchRequest<NSManagedObject>(entityName: "Task")
             request.predicate = NSPredicate(format: "homeID == %@", homeID as CVarArg)
-            let objects = try context.fetch(request)
+            let objects = try self.context.fetch(request)
             return objects.compactMap { obj in
                 guard let id = obj.value(forKey: "id") as? UUID,
                       let title = obj.value(forKey: "title") as? String,
@@ -48,8 +48,8 @@ public final class CoreDataTaskRepository: TaskRepository {
     }
 
     public func add(task: TaskEntity) async throws {
-        try await context.perform {
-            let obj = NSEntityDescription.insertNewObject(forEntityName: "Task", into: context)
+        try await context.perform { [self] in
+            let obj = NSEntityDescription.insertNewObject(forEntityName: "Task", into: self.context)
             obj.setValue(task.id, forKey: "id")
             obj.setValue(task.homeID, forKey: "homeID")
             obj.setValue(task.assetID, forKey: "assetID")
@@ -79,7 +79,7 @@ public final class CoreDataTaskRepository: TaskRepository {
     }
 
     public func update(task: TaskEntity) async throws {
-        try await context.perform {
+        try await context.perform { [self] in
             let request = NSFetchRequest<NSManagedObject>(entityName: "Task")
             request.predicate = NSPredicate(format: "id == %@", task.id as CVarArg)
             if let obj = try context.fetch(request).first {
@@ -96,7 +96,7 @@ public final class CoreDataTaskRepository: TaskRepository {
     }
 
     public func delete(task: TaskEntity) async throws {
-        try await context.perform {
+        try await context.perform { [self] in
             let request = NSFetchRequest<NSManagedObject>(entityName: "Task")
             request.predicate = NSPredicate(format: "id == %@", task.id as CVarArg)
             if let obj = try context.fetch(request).first {

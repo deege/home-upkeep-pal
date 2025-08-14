@@ -20,7 +20,7 @@ public final class CoreDataAssetRepository: AssetRepository {
         try await context.perform {
             let request = NSFetchRequest<NSManagedObject>(entityName: "Asset")
             request.predicate = NSPredicate(format: "homeID == %@", homeID as CVarArg)
-            let objects = try context.fetch(request)
+            let objects = try self.context.fetch(request)
             return objects.compactMap { obj in
                 guard let id = obj.value(forKey: "id") as? UUID,
                       let name = obj.value(forKey: "name") as? String,
@@ -55,7 +55,7 @@ public final class CoreDataAssetRepository: AssetRepository {
 
     public func add(asset: AssetEntity) async throws {
         try await context.perform {
-            let obj = NSEntityDescription.insertNewObject(forEntityName: "Asset", into: context)
+            let obj = NSEntityDescription.insertNewObject(forEntityName: "Asset", into: self.context)
             obj.setValue(asset.id, forKey: "id")
             obj.setValue(asset.homeID, forKey: "homeID")
             obj.setValue(asset.name, forKey: "name")
@@ -72,10 +72,10 @@ public final class CoreDataAssetRepository: AssetRepository {
 
             let homeReq = NSFetchRequest<NSManagedObject>(entityName: "Home")
             homeReq.predicate = NSPredicate(format: "id == %@", asset.homeID as CVarArg)
-            if let home = try context.fetch(homeReq).first {
+            if let home = try self.context.fetch(homeReq).first {
                 obj.setValue(home, forKey: "home")
             }
-            try context.save()
+            try self.context.save()
         }
     }
 
@@ -83,7 +83,7 @@ public final class CoreDataAssetRepository: AssetRepository {
         try await context.perform {
             let request = NSFetchRequest<NSManagedObject>(entityName: "Asset")
             request.predicate = NSPredicate(format: "id == %@", asset.id as CVarArg)
-            if let obj = try context.fetch(request).first {
+            if let obj = try self.context.fetch(request).first {
                 obj.setValue(asset.name, forKey: "name")
                 obj.setValue(asset.category.rawValue, forKey: "category")
                 obj.setValue(asset.location, forKey: "location")
@@ -94,18 +94,18 @@ public final class CoreDataAssetRepository: AssetRepository {
                 obj.setValue(asset.notes, forKey: "notes")
                 obj.setValue(asset.photoFileNames, forKey: "photoFileNames")
                 obj.setValue(asset.updatedAt, forKey: "updatedAt")
-                try context.save()
+                try self.context.save()
             }
         }
     }
 
     public func delete(asset: AssetEntity) async throws {
-        try await context.perform {
+        try await self.context.perform {
             let request = NSFetchRequest<NSManagedObject>(entityName: "Asset")
             request.predicate = NSPredicate(format: "id == %@", asset.id as CVarArg)
-            if let obj = try context.fetch(request).first {
-                context.delete(obj)
-                try context.save()
+            if let obj = try self.context.fetch(request).first {
+                self.context.delete(obj)
+                try self.context.save()
             }
         }
     }
