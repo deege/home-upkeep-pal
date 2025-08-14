@@ -1,0 +1,17 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+*.xcworkspace
+xcuserdata/
+
+# Swift Package Manager
+.build/
+
+# SwiftPM integration
+Packages/
+
+# General
+.DS_Store
+*.swp
+
