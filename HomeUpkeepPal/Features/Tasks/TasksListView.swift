@@ -25,6 +25,8 @@ public struct TasksListView: View {
                     Button(action: { toggle(task) }) {
                         Image(systemName: task.isArchived ? "checkmark.circle" : "circle")
                     }
+                    .buttonStyle(.plain)
+
                     NavigationLink(destination: EditTaskView(home: home, task: task) { updated in
                         Task {
                             try? await taskRepository.update(task: updated)
