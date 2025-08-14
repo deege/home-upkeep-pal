@@ -22,28 +22,28 @@ public struct HomesListView: View {
                     }.tint(.blue)
                 }
             }
-            .navigationTitle("Homes")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        editingHome = nil
-                        showEditHome = true
-                    }) { Image(systemName: "plus") }
-                }
-            }
-            .navigationDestination(isPresented: $showEditHome) {
-                EditHomeView(home: editingHome) { newHome in
-                    Task {
-                        if editingHome != nil {
-                            try? await homeRepository.update(home: newHome)
-                        } else {
-                            try? await homeRepository.add(home: newHome)
-                        }
-                        homes = (try? await homeRepository.fetchHomes()) ?? homes
-                    }
-                }
-            }
             .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
+        }
+        .navigationTitle("Homes")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    editingHome = nil
+                    showEditHome = true
+                }) { Image(systemName: "plus") }
+            }
+        }
+        .navigationDestination(isPresented: $showEditHome) {
+            EditHomeView(home: editingHome) { newHome in
+                Task {
+                    if editingHome != nil {
+                        try? await homeRepository.update(home: newHome)
+                    } else {
+                        try? await homeRepository.add(home: newHome)
+                    }
+                    homes = (try? await homeRepository.fetchHomes()) ?? homes
+                }
+            }
         }
         .task {
             homes = (try? await homeRepository.fetchHomes()) ?? []
