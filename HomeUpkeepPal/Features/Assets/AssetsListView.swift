@@ -15,6 +15,7 @@ public struct AssetsListView: View {
                 Text(asset.name)
             }
         }
+        .overlay(assets.isEmpty ? EmptyStateView(message: "No assets yet") : nil)
         .navigationTitle("Assets")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

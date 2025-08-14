@@ -13,6 +13,7 @@ public struct TasksListView: View {
         List(tasks) { task in
             TaskRowView(task: task)
         }
+        .overlay(tasks.isEmpty ? EmptyStateView(message: "No tasks yet") : nil)
         .navigationTitle("Tasks")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
