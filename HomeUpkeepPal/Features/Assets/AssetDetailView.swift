@@ -12,6 +12,8 @@ public struct AssetDetailView: View {
                 Text(asset.name)
                 Text(asset.category.rawValue.capitalized)
                 if let location = asset.location { Text(location) }
+                if let model = asset.model { Text(model) }
+                if let serial = asset.serial { Text(serial) }
             }
             Section("Tasks") {
                 Text("Related tasks appear here")

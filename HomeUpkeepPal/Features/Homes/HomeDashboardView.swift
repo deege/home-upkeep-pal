@@ -7,6 +7,8 @@ public struct HomeDashboardView: View {
     @State private var selection: Tab = .tasks
     @State private var showEditTask = false
     @State private var showEditAsset = false
+    @State private var tasks: [TaskEntity] = []
+    @State private var assets: [AssetEntity] = []
 
     enum Tab {
         case tasks
@@ -17,11 +19,11 @@ public struct HomeDashboardView: View {
 
     public var body: some View {
         TabView(selection: $selection) {
-            TasksListView(home: home)
+            TasksListView(home: home, tasks: $tasks)
                 .tabItem { Label("Tasks", systemImage: "checklist") }
                 .tag(Tab.tasks)
 
-            AssetsListView(home: home)
+            AssetsListView(home: home, assets: $assets)
                 .tabItem { Label("Assets", systemImage: "cube") }
                 .tag(Tab.assets)
         }
@@ -39,10 +41,14 @@ public struct HomeDashboardView: View {
             }
         }
         .navigationDestination(isPresented: $showEditTask) {
-            EditTaskView()
+            EditTaskView(home: home) { task in
+                tasks.append(task)
+            }
         }
         .navigationDestination(isPresented: $showEditAsset) {
-            EditAssetView()
+            EditAssetView(home: home) { asset in
+                assets.append(asset)
+            }
         }
     }
 }
