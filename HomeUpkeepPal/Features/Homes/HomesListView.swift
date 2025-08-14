@@ -23,7 +23,9 @@ public struct HomesListView: View {
                 }
             }
             .navigationDestination(isPresented: $showEditHome) {
-                EditHomeView() 
+                EditHomeView { newHome in
+                    homes.append(newHome)
+                }
             }
             .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
         }
