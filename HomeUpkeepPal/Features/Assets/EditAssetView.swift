@@ -18,12 +18,14 @@ public struct EditAssetView: View {
 
     private let home: HomeEntity
     private let onSave: (AssetEntity) -> Void
+    private let existingAsset: AssetEntity?
 
     public init(home: HomeEntity,
                 asset: AssetEntity? = nil,
                 onSave: @escaping (AssetEntity) -> Void = { _ in }) {
         self.home = home
         self.onSave = onSave
+        self.existingAsset = asset
         _name = State(initialValue: asset?.name ?? "")
         _category = State(initialValue: asset?.category ?? .other)
         _location = State(initialValue: asset?.location ?? "")
@@ -68,6 +70,7 @@ public struct EditAssetView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {
                     let asset = AssetEntity(
+                        id: existingAsset?.id ?? UUID(),
                         homeID: home.id,
                         name: name,
                         category: category,
@@ -77,7 +80,9 @@ public struct EditAssetView: View {
                         purchaseDate: hasPurchaseDate ? purchaseDate : nil,
                         warrantyExpiry: hasWarrantyExpiry ? warrantyExpiry : nil,
                         notes: notes.isEmpty ? nil : notes,
-                        photoFileNames: photosText.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+                        photoFileNames: photosText.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) },
+                        createdAt: existingAsset?.createdAt ?? Date(),
+                        updatedAt: Date()
                     )
                     onSave(asset)
                     dismiss()

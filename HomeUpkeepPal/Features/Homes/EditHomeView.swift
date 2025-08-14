@@ -9,9 +9,11 @@ public struct EditHomeView: View {
     @State private var notes: String
 
     private let onSave: (HomeEntity) -> Void
+    private let existingHome: HomeEntity?
 
     public init(home: HomeEntity? = nil, onSave: @escaping (HomeEntity) -> Void = { _ in }) {
         self.onSave = onSave
+        self.existingHome = home
         _name = State(initialValue: home?.name ?? "")
         _address = State(initialValue: home?.address ?? "")
         _notes = State(initialValue: home?.notes ?? "")
@@ -30,9 +32,12 @@ public struct EditHomeView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {
                     let home = HomeEntity(
+                        id: existingHome?.id ?? UUID(),
                         name: name,
                         address: address.isEmpty ? nil : address,
-                        notes: notes.isEmpty ? nil : notes
+                        notes: notes.isEmpty ? nil : notes,
+                        createdAt: existingHome?.createdAt ?? Date(),
+                        updatedAt: Date()
                     )
                     onSave(home)
                     dismiss()

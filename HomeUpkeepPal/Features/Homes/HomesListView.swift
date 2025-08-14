@@ -7,6 +7,7 @@ public struct HomesListView: View {
     public init() {}
     @State private var homes: [HomeEntity] = []
     @State private var showEditHome = false
+    @State private var editingHome: HomeEntity? = nil
 
     public var body: some View {
         NavigationStack {
@@ -14,19 +15,30 @@ public struct HomesListView: View {
                 NavigationLink(destination: HomeDashboardView(home: home)) {
                     Text(home.name)
                 }
+                .swipeActions {
+                    Button("Edit") {
+                        editingHome = home
+                        showEditHome = true
+                    }.tint(.blue)
+                }
             }
             .navigationTitle("Homes")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
+                        editingHome = nil
                         showEditHome = true
                     }) { Image(systemName: "plus") }
                 }
             }
             .navigationDestination(isPresented: $showEditHome) {
-                EditHomeView { newHome in
+                EditHomeView(home: editingHome) { newHome in
                     Task {
-                        try? await homeRepository.add(home: newHome)
+                        if editingHome != nil {
+                            try? await homeRepository.update(home: newHome)
+                        } else {
+                            try? await homeRepository.add(home: newHome)
+                        }
                         homes = (try? await homeRepository.fetchHomes()) ?? homes
                     }
                 }

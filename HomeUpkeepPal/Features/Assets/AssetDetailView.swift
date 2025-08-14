@@ -3,8 +3,15 @@ import SwiftUI
 
 /// Detail screen for an asset with related tasks.
 public struct AssetDetailView: View {
-    public let asset: AssetEntity
-    public init(asset: AssetEntity) { self.asset = asset }
+    public let home: HomeEntity
+    private let assetRepository = CoreDataAssetRepository()
+    @State private var asset: AssetEntity
+    @State private var showEdit = false
+
+    public init(home: HomeEntity, asset: AssetEntity) {
+        self.home = home
+        _asset = State(initialValue: asset)
+    }
 
     public var body: some View {
         List {
@@ -36,6 +43,19 @@ public struct AssetDetailView: View {
             }
         }
         .navigationTitle(asset.name)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Edit") { showEdit = true }
+            }
+        }
+        .navigationDestination(isPresented: $showEdit) {
+            EditAssetView(home: home, asset: asset) { updated in
+                Task {
+                    try? await assetRepository.update(asset: updated)
+                    asset = updated
+                }
+            }
+        }
     }
 }
 #endif
