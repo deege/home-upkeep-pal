@@ -4,19 +4,45 @@ import SwiftUI
 /// Dashboard for a specific home showing upcoming tasks and navigation to assets and tasks.
 public struct HomeDashboardView: View {
     public let home: HomeEntity
+    @State private var selection: Tab = .tasks
+    @State private var showEditTask = false
+    @State private var showEditAsset = false
+
+    enum Tab {
+        case tasks
+        case assets
+    }
+
     public init(home: HomeEntity) { self.home = home }
 
     public var body: some View {
-        TabView {
-            NavigationStack {
-                TasksListView(home: home)
-            }
-            .tabItem { Label("Tasks", systemImage: "checklist") }
+        TabView(selection: $selection) {
+            TasksListView(home: home)
+                .tabItem { Label("Tasks", systemImage: "checklist") }
+                .tag(Tab.tasks)
 
-            NavigationStack {
-                AssetsListView(home: home)
+            AssetsListView(home: home)
+                .tabItem { Label("Assets", systemImage: "cube") }
+                .tag(Tab.assets)
+        }
+        .navigationTitle(selection == .tasks ? "Tasks" : "Assets")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    switch selection {
+                    case .tasks: showEditTask = true
+                    case .assets: showEditAsset = true
+                    }
+                }) {
+                    Image(systemName: "plus")
+                }
             }
-            .tabItem { Label("Assets", systemImage: "cube") }
+        }
+        .navigationDestination(isPresented: $showEditTask) {
+            EditTaskView()
+        }
+        .navigationDestination(isPresented: $showEditAsset) {
+            EditAssetView()
         }
     }
 }

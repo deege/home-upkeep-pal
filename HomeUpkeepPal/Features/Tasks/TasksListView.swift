@@ -5,7 +5,6 @@ import SwiftUI
 public struct TasksListView: View {
     public let home: HomeEntity
     @State private var tasks: [TaskEntity] = []
-    @State private var showEditTask = false
 
     public init(home: HomeEntity) { self.home = home }
 
@@ -13,17 +12,7 @@ public struct TasksListView: View {
         List(tasks) { task in
             TaskRowView(task: task)
         }
-        .navigationTitle("Tasks")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { showEditTask = true }) {
-                    Image(systemName: "plus")
-                }
-            }
-        }
-        .navigationDestination(isPresented: $showEditTask) {
-            EditTaskView()
-        }
+        .overlay(tasks.isEmpty ? EmptyStateView(message: "No tasks yet") : nil)
     }
 }
 #endif
