@@ -15,18 +15,20 @@ public struct AssetsListView: View {
     }
 
     public var body: some View {
-        List(assets) { asset in
-            NavigationLink(destination: AssetDetailView(home: home, asset: asset)) {
-                Text(asset.name)
+        Group {
+            List(assets) { asset in
+                NavigationLink(destination: AssetDetailView(home: home, asset: asset)) {
+                    Text(asset.name)
+                }
+                .swipeActions {
+                    Button("Edit") {
+                        editingAsset = asset
+                        showEdit = true
+                    }.tint(.blue)
+                }
             }
-            .swipeActions {
-                Button("Edit") {
-                    editingAsset = asset
-                    showEdit = true
-                }.tint(.blue)
-            }
+            .overlay(assets.isEmpty ? EmptyStateView(message: "No assets yet") : nil)
         }
-        .overlay(assets.isEmpty ? EmptyStateView(message: "No assets yet") : nil)
         .navigationDestination(isPresented: $showEdit) {
             EditAssetView(home: home, asset: editingAsset) { newAsset in
                 Task {
