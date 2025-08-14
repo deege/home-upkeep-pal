@@ -5,7 +5,6 @@ import SwiftUI
 public struct HomesListView: View {
     public init() {}
     @State private var homes: [HomeEntity] = []
-    @State private var isPresentingNewHome = false
 
     public var body: some View {
         NavigationStack {
@@ -17,22 +16,16 @@ public struct HomesListView: View {
             .navigationTitle("Homes")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        isPresentingNewHome = true
+                    NavigationLink {
+                        EditHomeView { home in
+                            homes.append(home)
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
             .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
-        }
-        .sheet(isPresented: $isPresentingNewHome) {
-            NavigationStack {
-                EditHomeView { home in
-                    homes.append(home)
-                    isPresentingNewHome = false
-                }
-            }
         }
     }
 }
