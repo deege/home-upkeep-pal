@@ -8,9 +8,13 @@ public struct EditTaskView: View {
     @State private var frequencyDays: Int
     @State private var lastDoneAt: Date
     @State private var notes: String
+    @State private var selectedAssetID: UUID?
+    @State private var isArchived: Bool
+    @State private var assets: [AssetEntity] = []
 
     private let home: HomeEntity
     private let asset: AssetEntity?
+    private let assetRepository = CoreDataAssetRepository()
     private let onSave: (TaskEntity) -> Void
 
     public init(home: HomeEntity,
@@ -24,6 +28,8 @@ public struct EditTaskView: View {
         _frequencyDays = State(initialValue: task?.frequencyDays ?? 1)
         _lastDoneAt = State(initialValue: task?.lastDoneAt ?? Date())
         _notes = State(initialValue: task?.notes ?? "")
+        _selectedAssetID = State(initialValue: task?.assetID ?? asset?.id)
+        _isArchived = State(initialValue: task?.isArchived ?? false)
     }
 
     public var body: some View {
@@ -36,6 +42,17 @@ public struct EditTaskView: View {
                 DatePicker("Last Done", selection: $lastDoneAt, displayedComponents: .date)
                 TextField("Notes", text: $notes)
             }
+            Section("Asset") {
+                Picker("Asset", selection: $selectedAssetID) {
+                    Text("None").tag(UUID?.none)
+                    ForEach(assets) { asset in
+                        Text(asset.name).tag(Optional(asset.id))
+                    }
+                }
+            }
+            Section("Status") {
+                Toggle("Archived", isOn: $isArchived)
+            }
         }
         .navigationTitle("Task")
         .toolbar {
@@ -44,18 +61,22 @@ public struct EditTaskView: View {
                     let nextDue = Calendar.current.date(byAdding: .day, value: frequencyDays, to: lastDoneAt) ?? Date()
                     let task = TaskEntity(
                         homeID: home.id,
-                        assetID: asset?.id,
+                        assetID: selectedAssetID,
                         title: title,
                         notes: notes.isEmpty ? nil : notes,
                         frequencyDays: frequencyDays,
                         lastDoneAt: lastDoneAt,
-                        nextDueAt: nextDue
+                        nextDueAt: nextDue,
+                        isArchived: isArchived
                     )
                     onSave(task)
                     dismiss()
                 }
                 .disabled(title.isEmpty)
             }
+        }
+        .task {
+            assets = (try? await assetRepository.fetchAssets(homeID: home.id)) ?? []
         }
     }
 }

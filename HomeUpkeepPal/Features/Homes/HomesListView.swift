@@ -3,6 +3,7 @@ import SwiftUI
 
 /// Root list showing all homes for the user.
 public struct HomesListView: View {
+    private let homeRepository = CoreDataHomeRepository()
     public init() {}
     @State private var homes: [HomeEntity] = []
     @State private var showEditHome = false
@@ -24,10 +25,16 @@ public struct HomesListView: View {
             }
             .navigationDestination(isPresented: $showEditHome) {
                 EditHomeView { newHome in
-                    homes.append(newHome)
+                    Task {
+                        try? await homeRepository.add(home: newHome)
+                        homes = (try? await homeRepository.fetchHomes()) ?? homes
+                    }
                 }
             }
             .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
+        }
+        .task {
+            homes = (try? await homeRepository.fetchHomes()) ?? []
         }
     }
 }
