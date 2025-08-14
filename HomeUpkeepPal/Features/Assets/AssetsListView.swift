@@ -5,6 +5,7 @@ import SwiftUI
 public struct AssetsListView: View {
     public let home: HomeEntity
     @State private var assets: [AssetEntity] = []
+    @State private var showEditAsset = false
 
     public init(home: HomeEntity) { self.home = home }
 
@@ -17,8 +18,13 @@ public struct AssetsListView: View {
         .navigationTitle("Assets")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {}) { Image(systemName: "plus") }
+                Button(action: { showEditAsset = true }) {
+                    Image(systemName: "plus")
+                }
             }
+        }
+        .navigationDestination(isPresented: $showEditAsset) {
+            EditAssetView()
         }
     }
 }

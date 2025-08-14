@@ -12,7 +12,7 @@ let package = Package(
     targets: [
         .target(
             name: "HomeCare",
-            path: "Sources",
+            path: "HomeUpkeepPal",
             resources: [
                 .process("Persistence/Model")
             ]
@@ -20,7 +20,7 @@ let package = Package(
         .testTarget(
             name: "HomeCareTests",
             dependencies: ["HomeCare"],
-            path: "Tests/HomeCareTests"
+            path: "HomeUpkeepPalTests"
         )
     ]
 )
