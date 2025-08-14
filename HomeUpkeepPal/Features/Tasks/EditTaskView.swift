@@ -82,6 +82,10 @@ public struct EditTaskView: View {
         }
         .task {
             assets = (try? await assetRepository.fetchAssets(homeID: home.id)) ?? []
+            if let selected = selectedAssetID,
+               !assets.contains(where: { $0.id == selected }) {
+                selectedAssetID = nil
+            }
         }
     }
 }

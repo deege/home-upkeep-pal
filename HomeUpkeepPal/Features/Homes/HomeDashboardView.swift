@@ -31,7 +31,15 @@ public struct HomeDashboardView: View {
         }
         .navigationTitle(selection == .tasks ? "Tasks" : "Assets")
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarLeading) {
+                NavigationLink(destination: SettingsView()) {
+                    Image(systemName: "gearshape")
+                }
+            }
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                NavigationLink(destination: ShareStatusView(home: home)) {
+                    Image(systemName: "square.and.arrow.up")
+                }
                 Button(action: {
                     switch selection {
                     case .tasks: showEditTask = true
