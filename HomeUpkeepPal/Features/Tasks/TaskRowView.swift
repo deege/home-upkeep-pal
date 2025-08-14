@@ -10,9 +10,15 @@ public struct TaskRowView: View {
     public var body: some View {
         VStack(alignment: .leading) {
             Text(task.title)
-            Text(task.nextDueAt, style: .date)
-                .font(.caption)
-                .foregroundColor(.secondary)
+            if task.isArchived, let done = task.lastDoneAt {
+                Text("Completed \(done, style: .date)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else {
+                Text(task.nextDueAt, style: .date)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 }

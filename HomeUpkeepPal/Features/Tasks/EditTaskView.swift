@@ -16,6 +16,7 @@ public struct EditTaskView: View {
     private let asset: AssetEntity?
     private let assetRepository = CoreDataAssetRepository()
     private let onSave: (TaskEntity) -> Void
+    private let existingTask: TaskEntity?
 
     public init(home: HomeEntity,
                 asset: AssetEntity? = nil,
@@ -24,6 +25,7 @@ public struct EditTaskView: View {
         self.home = home
         self.asset = asset
         self.onSave = onSave
+        self.existingTask = task
         _title = State(initialValue: task?.title ?? "")
         _frequencyDays = State(initialValue: task?.frequencyDays ?? 1)
         _lastDoneAt = State(initialValue: task?.lastDoneAt ?? Date())
@@ -58,8 +60,9 @@ public struct EditTaskView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") {
-                    let nextDue = Calendar.current.date(byAdding: .day, value: frequencyDays, to: lastDoneAt) ?? Date()
+                    let nextDue = ComputeNextDueUseCase().execute(lastDone: lastDoneAt, frequencyDays: frequencyDays)
                     let task = TaskEntity(
+                        id: existingTask?.id ?? UUID(),
                         homeID: home.id,
                         assetID: selectedAssetID,
                         title: title,
@@ -67,7 +70,9 @@ public struct EditTaskView: View {
                         frequencyDays: frequencyDays,
                         lastDoneAt: lastDoneAt,
                         nextDueAt: nextDue,
-                        isArchived: isArchived
+                        isArchived: isArchived,
+                        createdAt: existingTask?.createdAt ?? Date(),
+                        updatedAt: Date()
                     )
                     onSave(task)
                     dismiss()
