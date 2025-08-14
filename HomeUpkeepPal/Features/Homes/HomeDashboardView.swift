@@ -8,12 +8,16 @@ public struct HomeDashboardView: View {
 
     public var body: some View {
         TabView {
-            TasksListView(home: home)
-                .tabItem { Label("Tasks", systemImage: "checklist") }
-            AssetsListView(home: home)
-                .tabItem { Label("Assets", systemImage: "cube") }
+            NavigationStack {
+                TasksListView(home: home)
+            }
+            .tabItem { Label("Tasks", systemImage: "checklist") }
+
+            NavigationStack {
+                AssetsListView(home: home)
+            }
+            .tabItem { Label("Assets", systemImage: "cube") }
         }
-        .navigationTitle(home.name)
     }
 }
 #endif
