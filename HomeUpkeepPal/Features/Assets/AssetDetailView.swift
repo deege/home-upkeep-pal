@@ -14,6 +14,22 @@ public struct AssetDetailView: View {
                 if let location = asset.location { Text(location) }
                 if let model = asset.model { Text(model) }
                 if let serial = asset.serial { Text(serial) }
+                if let purchase = asset.purchaseDate {
+                    Text("Purchased on \(purchase.formatted(date: .abbreviated, time: .omitted))")
+                }
+                if let warranty = asset.warrantyExpiry {
+                    Text("Warranty expires \(warranty.formatted(date: .abbreviated, time: .omitted))")
+                }
+            }
+            if let notes = asset.notes {
+                Section("Notes") { Text(notes) }
+            }
+            if !asset.photoFileNames.isEmpty {
+                Section("Photos") {
+                    ForEach(asset.photoFileNames, id: \.self) { name in
+                        Text(name)
+                    }
+                }
             }
             Section("Tasks") {
                 Text("Related tasks appear here")

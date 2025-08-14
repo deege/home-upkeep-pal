@@ -4,6 +4,8 @@ import SwiftUI
 /// Dashboard for a specific home showing upcoming tasks and navigation to assets and tasks.
 public struct HomeDashboardView: View {
     public let home: HomeEntity
+    private let taskRepository = CoreDataTaskRepository()
+    private let assetRepository = CoreDataAssetRepository()
     @State private var selection: Tab = .tasks
     @State private var showEditTask = false
     @State private var showEditAsset = false
@@ -42,13 +44,25 @@ public struct HomeDashboardView: View {
         }
         .navigationDestination(isPresented: $showEditTask) {
             EditTaskView(home: home) { task in
-                tasks.append(task)
+                Task {
+                    try? await taskRepository.add(task: task)
+                    tasks = (try? await taskRepository.fetchTasks(homeID: home.id)) ?? tasks
+                }
             }
         }
         .navigationDestination(isPresented: $showEditAsset) {
             EditAssetView(home: home) { asset in
-                assets.append(asset)
+                Task {
+                    try? await assetRepository.add(asset: asset)
+                    assets = (try? await assetRepository.fetchAssets(homeID: home.id)) ?? assets
+                }
             }
+        }
+        .task {
+            async let t = taskRepository.fetchTasks(homeID: home.id)
+            async let a = assetRepository.fetchAssets(homeID: home.id)
+            tasks = (try? await t) ?? []
+            assets = (try? await a) ?? []
         }
     }
 }

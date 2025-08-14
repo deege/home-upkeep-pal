@@ -9,6 +9,12 @@ public struct EditAssetView: View {
     @State private var location: String
     @State private var model: String
     @State private var serial: String
+    @State private var hasPurchaseDate: Bool
+    @State private var purchaseDate: Date
+    @State private var hasWarrantyExpiry: Bool
+    @State private var warrantyExpiry: Date
+    @State private var notes: String
+    @State private var photosText: String
 
     private let home: HomeEntity
     private let onSave: (AssetEntity) -> Void
@@ -23,6 +29,12 @@ public struct EditAssetView: View {
         _location = State(initialValue: asset?.location ?? "")
         _model = State(initialValue: asset?.model ?? "")
         _serial = State(initialValue: asset?.serial ?? "")
+        _hasPurchaseDate = State(initialValue: asset?.purchaseDate != nil)
+        _purchaseDate = State(initialValue: asset?.purchaseDate ?? Date())
+        _hasWarrantyExpiry = State(initialValue: asset?.warrantyExpiry != nil)
+        _warrantyExpiry = State(initialValue: asset?.warrantyExpiry ?? Date())
+        _notes = State(initialValue: asset?.notes ?? "")
+        _photosText = State(initialValue: asset?.photoFileNames.joined(separator: ", ") ?? "")
     }
 
     public var body: some View {
@@ -38,6 +50,18 @@ public struct EditAssetView: View {
                 TextField("Model", text: $model)
                 TextField("Serial Number", text: $serial)
             }
+            Section("Additional") {
+                Toggle("Purchase Date", isOn: $hasPurchaseDate)
+                if hasPurchaseDate {
+                    DatePicker("Purchase Date", selection: $purchaseDate, displayedComponents: .date)
+                }
+                Toggle("Warranty Expiry", isOn: $hasWarrantyExpiry)
+                if hasWarrantyExpiry {
+                    DatePicker("Warranty Expiry", selection: $warrantyExpiry, displayedComponents: .date)
+                }
+                TextField("Notes", text: $notes)
+                TextField("Photo filenames (comma-separated)", text: $photosText)
+            }
         }
         .navigationTitle("Asset")
         .toolbar {
@@ -49,7 +73,11 @@ public struct EditAssetView: View {
                         category: category,
                         location: location.isEmpty ? nil : location,
                         model: model.isEmpty ? nil : model,
-                        serial: serial.isEmpty ? nil : serial
+                        serial: serial.isEmpty ? nil : serial,
+                        purchaseDate: hasPurchaseDate ? purchaseDate : nil,
+                        warrantyExpiry: hasWarrantyExpiry ? warrantyExpiry : nil,
+                        notes: notes.isEmpty ? nil : notes,
+                        photoFileNames: photosText.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
                     )
                     onSave(asset)
                     dismiss()
