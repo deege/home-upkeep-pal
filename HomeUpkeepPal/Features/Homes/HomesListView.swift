@@ -23,6 +23,15 @@ public struct HomesListView: View {
                 }
             }
             .overlay(homes.isEmpty ? EmptyStateView(message: "Create your first Home") : nil)
+            .navigationTitle("Homes")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        editingHome = nil
+                        showEditHome = true
+                    }) { Image(systemName: "plus") }
+                }
+            }
 
             NavigationLink(isActive: $showEditHome) {
                 EditHomeView(home: editingHome) { newHome in
@@ -36,15 +45,6 @@ public struct HomesListView: View {
                     }
                 }
             } label: { EmptyView() }
-        }
-        .navigationTitle("Homes")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    editingHome = nil
-                    showEditHome = true
-                }) { Image(systemName: "plus") }
-            }
         }
         .task {
             homes = (try? await homeRepository.fetchHomes()) ?? []
